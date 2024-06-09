@@ -1,6 +1,6 @@
 # Watavaran: A Powerful Weather App (Built with Node.js and Modern NPM Modules)
 
-[Imagen of a weather app with a sleek and modern design, displaying the current temperature, weather conditions, and a forecast for the next few days]
+[weatherapp.png]
 
 Watavaran is a feature-rich weather application built with Node.js, offering a seamless user experience and access to real-time weather information. Its sleek and modern design empowers users to stay informed about current conditions and upcoming forecasts.
 
