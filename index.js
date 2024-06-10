@@ -24,6 +24,23 @@ const replaceval = (tempdata, val) => {
     return temperature;
 };
 
+const replaceWithNA = (tempdata) => {
+    const placeholders = {
+        "{%temp%}": "N/A",
+        "{%mintemp%}": "N/A",
+        "{%maxtemp%}": "N/A",
+        "{%location%}": "City Not Found",
+        "{%country%}": "Country Not Found",
+        "{%tempstatus%}": "Weather Not Available"
+    };
+
+    let result = tempdata;
+    for (const placeholder in placeholders) {
+        result = result.replace(new RegExp(placeholder, "g"), placeholders[placeholder]);
+    }
+    return result;
+};
+
 const server = http.createServer((req, res) => {
     if (req.url.startsWith("/?city=")) {
         const urlParams = new URLSearchParams(req.url.split('?')[1]);
@@ -35,11 +52,12 @@ const server = http.createServer((req, res) => {
             .on('data', (chunk) => {
                 const objdata = JSON.parse(chunk);
                 if (objdata.cod === "404") {
-                    res.write(homeFile.replace("{%error%}", "<div class='error-popup'>Check city name</div>"));
+                    const errorData = replaceWithNA(homeFile);
+                    res.write(errorData.replace("{%error%}", "<div class='error-popup'>Check city name</div>"));
                 } else {
                     const objarr = [objdata];
                     const realTimeData = objarr.map(val => replaceval(homeFile, val)).join(" ");
-                    res.write(realTimeData.replace("{%error%}", "city not found"));
+                    res.write(realTimeData.replace("{%error%}", ""));
                 }
             })
             .on('end', (err) => {
@@ -47,7 +65,7 @@ const server = http.createServer((req, res) => {
                 res.end();
             });
     } else {
-        res.end(homeFile.replace("{%error%}", "city not found"));
+        res.end(homeFile.replace("{%error%}", ""));
     }
 });
 
